@@ -1,16 +1,6 @@
-// server.js
-const express = require('express');
-const bodyParser = require('body-parser');
 const webpush = require('web-push');
-require('dotenv').config();
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Для парсинга JSON
-app.use(bodyParser.json());
-
-// Устанавливаем VAPID ключи
+// Установите VAPID ключи
 const publicKey = process.env.PUBLIC_KEY;
 const privateKey = process.env.PRIVATE_KEY;
 
@@ -20,34 +10,21 @@ webpush.setVapidDetails(
   privateKey
 );
 
-// Массив для хранения подписок (в реальном проекте — лучше использовать БД)
-let subscriptions = [];
+// Пример отправки уведомлений на всех клиентов
+const sendNotificationToAll = () => {
+  // В данном случае мы не храним подписки, и не отправляем их
+  // Используем Service Worker для получения уведомлений.
+  const notificationPayload = JSON.stringify({
+    title: 'Новое уведомление!',
+    message: 'У вас новое сообщение.'
+  });
 
-// Эндпоинт для подписки
-app.post('/subscribe', (req, res) => {
-  const subscription = req.body;
-  subscriptions.push(subscription);
-  console.log('Новая подписка:', subscription);
-  res.status(201).json({ message: 'Подписка добавлена!' });
-});
-
-// Эндпоинт для отправки уведомлений
-app.post('/sendNotification', (req, res) => {
-  const notificationPayload = req.body;
-
-  const notificationPromises = subscriptions.map(subscription =>
-    webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
-  );
-
-  Promise.all(notificationPromises)
-    .then(() => res.status(200).json({ message: 'Уведомление отправлено!' }))
-    .catch(err => {
-      console.error('Ошибка отправки уведомлений:', err);
-      res.sendStatus(500);
+  // Пример отправки уведомления
+  webpush.sendNotification(subscription, notificationPayload)
+    .then(response => {
+      console.log('Уведомление отправлено:', response);
+    })
+    .catch(error => {
+      console.log('Ошибка при отправке уведомления:', error);
     });
-});
-
-// Запуск сервера
-app.listen(port, () => {
-  console.log(`Сервер запущен на http://localhost:${port}`);
-});
+};
