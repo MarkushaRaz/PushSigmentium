@@ -1,0 +1,16 @@
+{
+  "name": "Sigmentium-Backend",
+  "version": "1.0.0",
+  "main": "Server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node Server.js",
+    "gen": "node gen-key.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "web-push": "^3.5.4",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5"
+  }
+}
