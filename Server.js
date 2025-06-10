@@ -11,7 +11,7 @@ webpush.setVapidDetails(
 );
 
 // Пример отправки уведомлений на всех клиентов
-const sendNotificationToAll = () => {
+const send = () => {
   // В данном случае мы не храним подписки, и не отправляем их
   // Используем Service Worker для получения уведомлений.
   const notificationPayload = JSON.stringify({
@@ -28,3 +28,5 @@ const sendNotificationToAll = () => {
       console.log('Ошибка при отправке уведомления:', error);
     });
 };
+
+setInterval(send, 30000);
